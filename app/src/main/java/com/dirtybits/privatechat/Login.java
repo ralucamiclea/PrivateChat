@@ -47,7 +47,8 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter a password.");
                 }
                 else{
-                    //TODO: check if the user exists and login
+                    //TODO: check if the user exists and login to the specific account
+                    startActivity(new Intent(Login.this, Chat.class));
                 }
 
             }
