@@ -29,7 +29,8 @@
             android:name=".Chat"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".NewConv"></activity>
+        <activity android:name=".NewConv" />
+        <activity android:name=".AddContact"></activity>
     </application>
 
 </manifest>
