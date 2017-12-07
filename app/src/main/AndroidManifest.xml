@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login"
+        <activity
+            android:name=".Login"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -20,12 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Register"
-        android:configChanges="orientation"
-        android:screenOrientation="portrait"/>
-        <activity android:name=".Chat"
+        <activity
+            android:name=".Register"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Chat"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity android:name=".NewConv"></activity>
     </application>
 
 </manifest>
