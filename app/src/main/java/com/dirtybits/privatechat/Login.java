@@ -15,6 +15,8 @@ public class Login extends AppCompatActivity {
     EditText username, password;
     Button loginButton;
     String user, pass;
+    private static final String KEY_NAME = "key_name";
+    private static final String KEY_PASS = "key_password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,10 @@ public class Login extends AppCompatActivity {
                 }
                 else{
                     //TODO: check if the user exists and login to the specific account
-                    startActivity(new Intent(Login.this, Chat.class));
+                    Intent intent = new Intent(Login.this, Chat.class);
+                    intent.putExtra(KEY_NAME, user);
+                    intent.putExtra(KEY_PASS, pass);
+                    startActivity(intent);
                 }
 
             }
