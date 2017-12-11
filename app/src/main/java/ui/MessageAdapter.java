@@ -2,22 +2,27 @@ package ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dirtybits.privatechat.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by raluca.miclea on 12/11/2017.
  */
 
-public class MessageAdapter extends ArrayAdapter<Message> {
+public class MessageAdapter extends ArrayAdapter<Message> implements Filterable {
 
     private Context context;
     private List<Message> list;
@@ -34,6 +39,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemHolder itemHolder;
         View view = convertView;
+        Message hItem = getItem(position);
 
         if (view == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -49,8 +55,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             itemHolder = (ItemHolder) view.getTag();
         }
 
-        final Message hItem = list.get(position);
-
         itemHolder.chat_Name.setText(hItem.getName());
 
         return view;
@@ -59,5 +63,42 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     private static class ItemHolder {
         TextView chat_Name;
         RelativeLayout chat_Header;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                ArrayList<Message> tempList=new ArrayList<Message>();
+                if(constraint == null)
+                    filterResults.values = list;
+                if(constraint != null && list!=null) {
+                    int length=list.size();
+                    int i=0;
+                    while(i<length){
+                        Message item=list.get(i);
+                        Log.v("MyActivity", length + " " +item.getName() + " : " + constraint.toString());
+                        if(item.getName().startsWith(constraint.toString())) {
+                            Log.v("MyActivity", item.getName() + " : " + constraint.toString());
+                            tempList.add(item);
+                        }
+                        i++;
+                    }
+                    filterResults.values = tempList;
+                    filterResults.count = tempList.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (ArrayList<Message>) results.values;
+                notifyDataSetChanged();
+            }
+
+        };
     }
 }

@@ -76,7 +76,7 @@ public class ChatsFragment extends Fragment{
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface arg0, int arg1) {
-                                        //TODO: delete conversation
+                                        //TODO: delete conversation from storage
                                         Message toRemove = adapter.getItem(position);
                                         list.remove(toRemove);
                                         adapter.notifyDataSetChanged();

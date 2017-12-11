@@ -90,7 +90,7 @@ public class ContactsFragment extends Fragment{
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-                                //TODO: delete contact
+                                //TODO: delete conversation from storage
                                 Contact toRemove = adapter.getItem(position);
                                 adapter.remove(toRemove);
                                 Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
