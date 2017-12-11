@@ -8,43 +8,44 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.dirtybits.privatechat.Chat"
+    tools:context="com.dirtybits.privatechat.ChatsFragment"
     android:orientation="vertical"
     android:gravity="center">
 
     <EditText
-        android:id="@+id/search_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_old_conv"
         android:inputType="text"
         android:maxLines="1"
-        android:hint="search friend ..."
+        android:hint="search conversation with ..."
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/addFriendButton"
-        android:layout_below="@+id/search_friend"
-        android:layout_alignStart="@+id/search_friend"
-        android:layout_marginBottom="20dp"/>
+        android:layout_alignParentStart="true" />
 
     <ListView
-        android:id="@+id/friendList"
+        android:id="@+id/chatList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/addFriendButton"
-        android:layout_alignStart="@+id/addFriendButton"
+        android:layout_below="@+id/search_old_conv"
+        android:layout_alignStart="@+id/search_old_conv"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_write_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/colorFABbg"
+        android:tint="@color/colorWhite"
+        android:src="@drawable/ic_add_conv"
         />
 
 </RelativeLayout>
-

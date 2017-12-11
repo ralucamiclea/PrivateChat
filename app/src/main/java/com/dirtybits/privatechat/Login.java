@@ -50,7 +50,7 @@ public class Login extends AppCompatActivity {
                 }
                 else{
                     //TODO: check if the user exists and login to the specific account
-                    Intent intent = new Intent(Login.this, Chat.class);
+                    Intent intent = new Intent(Login.this, MainActivity.class);
                     intent.putExtra(KEY_NAME, user);
                     intent.putExtra(KEY_PASS, pass);
                     startActivity(intent);
