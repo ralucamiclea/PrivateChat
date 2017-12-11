@@ -2,6 +2,7 @@ package ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dirtybits.privatechat.R;
 
@@ -26,12 +26,15 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
 
     private Context context;
     private List<Message> list;
+    private List<Message> listBackup;
     private int layoutResID;
 
     public MessageAdapter(Context context, int layoutResourceID, List<Message> list) {
         super(context, layoutResourceID, list);
         this.context = context;
         this.list = list;
+        this.listBackup = new ArrayList<>();
+        this.listBackup.addAll(list);
         this.layoutResID = layoutResourceID;
     }
 
@@ -66,6 +69,21 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
     }
 
     @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Nullable
+    @Override
+    public Message getItem(int position) {
+        try {
+            return list.get(position);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public Filter getFilter() {
         return new Filter() {
 
@@ -74,12 +92,12 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
                 FilterResults filterResults = new FilterResults();
                 ArrayList<Message> tempList=new ArrayList<Message>();
                 if(constraint == null)
-                    filterResults.values = list;
-                if(constraint != null && list!=null) {
-                    int length=list.size();
+                    filterResults.values = listBackup;
+                if(constraint != null && listBackup != null) {
+                    int length=listBackup.size();
                     int i=0;
                     while(i<length){
-                        Message item=list.get(i);
+                        Message item=listBackup.get(i);
                         Log.v("MyActivity", length + " " +item.getName() + " : " + constraint.toString());
                         if(item.getName().startsWith(constraint.toString())) {
                             Log.v("MyActivity", item.getName() + " : " + constraint.toString());

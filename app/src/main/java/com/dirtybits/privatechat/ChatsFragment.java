@@ -110,6 +110,7 @@ public class ChatsFragment extends Fragment{
 
             @Override
             public void afterTextChanged(Editable s) {
+                ChatsFragment.this.adapter.getFilter().filter(s);
             }
         });
 
