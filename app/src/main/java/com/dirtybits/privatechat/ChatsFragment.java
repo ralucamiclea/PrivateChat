@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,12 +20,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ui.Message;
+import ui.MessageAdapter;
+
 public class ChatsFragment extends Fragment{
 
     FloatingActionButton fab;
     ListView chatList;
-    List<String> list;
-    ArrayAdapter adapter;
+    List<Message> list;
+    MessageAdapter adapter;
     EditText filterText;
 
     public ChatsFragment() {
@@ -48,11 +50,11 @@ public class ChatsFragment extends Fragment{
         fab = (FloatingActionButton) view.findViewById(R.id.fab_write_msg);
 
         //TODO: get usernames from the server
-        String[] values = {"user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8", "user9", "user10", "user11", "user12", "user13"};
-        list = new ArrayList<String>();
+        Message[] values = {new Message("friend1"), new Message("friend2"), new Message("friend3"), new Message("friend4"), new Message("friend5"), new Message("friend6"),new Message("friend7")};
+        list = new ArrayList<Message>();
         Collections.addAll(list,values);
 
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+        adapter = new MessageAdapter(getActivity(), R.layout.item_chat, list);
         chatList.setAdapter(adapter);
 
         chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,8 +77,9 @@ public class ChatsFragment extends Fragment{
                                     @Override
                                     public void onClick(DialogInterface arg0, int arg1) {
                                         //TODO: delete conversation
-                                        Object toRemove = adapter.getItem(position);
-                                        adapter.remove(toRemove);
+                                        Message toRemove = adapter.getItem(position);
+                                        list.remove(toRemove);
+                                        adapter.notifyDataSetChanged();
                                         Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
                                     }
                                 });

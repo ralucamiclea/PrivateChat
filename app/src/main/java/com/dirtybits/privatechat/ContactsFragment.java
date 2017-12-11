@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ public class ContactsFragment extends Fragment{
     ListView friendList;
     List<Contact> list;
     String user;
-    //ArrayAdapter adapter;
     ContactsAdapter adapter;
     EditText filterText;
     FloatingActionButton fab;
@@ -53,7 +51,7 @@ public class ContactsFragment extends Fragment{
         fab = (FloatingActionButton) view.findViewById(R.id.fab_add_friend);
 
         //TODO: get usernames from the server
-        Contact[] values = {new Contact("friend1"), new Contact("friend2"), new Contact("friend3"), new Contact("friend4"), new Contact("friend5"), new Contact("friend6"),new Contact("friend7")};
+        Contact[] values = {new Contact("friend1", R.drawable.ic_tree), new Contact("friend2", R.drawable.ic_tree), new Contact("friend3", R.drawable.ic_tree), new Contact("friend4", R.drawable.ic_tree), new Contact("friend5", R.drawable.ic_tree), new Contact("friend6", R.drawable.ic_tree),new Contact("friend7", R.drawable.ic_tree)};
         list = new ArrayList<Contact>();
         Collections.addAll(list,values);
 
@@ -66,7 +64,7 @@ public class ContactsFragment extends Fragment{
             public void onClick(View v) {
                 user = filterText.getText().toString();
                 //TODO: verify that the username exists
-                Contact obj = new Contact(user);
+                Contact obj = new Contact(user,R.drawable.ic_tree);
                 adapter.add(obj);
                 Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
             }
