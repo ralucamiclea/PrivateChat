@@ -20,12 +20,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ui.Contact;
+import ui.ContactsAdapter;
+
 public class ContactsFragment extends Fragment{
 
     ListView friendList;
-    List<String> list;
+    List<Contact> list;
     String user;
-    ArrayAdapter adapter;
+    //ArrayAdapter adapter;
+    ContactsAdapter adapter;
     EditText filterText;
     FloatingActionButton fab;
 
@@ -49,22 +53,24 @@ public class ContactsFragment extends Fragment{
         fab = (FloatingActionButton) view.findViewById(R.id.fab_add_friend);
 
         //TODO: get usernames from the server
-        String[] values = {"friend1", "friend2", "friend3", "friend4", "friend5", "friend6", "friend7"};
-        list = new ArrayList<String>();
+        Contact[] values = {new Contact("friend1"), new Contact("friend2"), new Contact("friend3"), new Contact("friend4"), new Contact("friend5"), new Contact("friend6"),new Contact("friend7")};
+        list = new ArrayList<Contact>();
         Collections.addAll(list,values);
+
+        adapter = new ContactsAdapter(getActivity(), R.layout.item_contact, list);
+        //adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+        friendList.setAdapter(adapter);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 user = filterText.getText().toString();
                 //TODO: verify that the username exists
-                adapter.add(user);
+                Contact obj = new Contact(user);
+                adapter.add(obj);
                 Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
             }
         });
-
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
-        friendList.setAdapter(adapter);
 
         friendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -87,7 +93,7 @@ public class ContactsFragment extends Fragment{
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 //TODO: delete contact
-                                Object toRemove = adapter.getItem(position);
+                                Contact toRemove = adapter.getItem(position);
                                 adapter.remove(toRemove);
                                 Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
                             }
