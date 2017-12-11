@@ -1,5 +1,7 @@
 package com.dirtybits.privatechat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,7 +42,7 @@ public class ChatsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        final View view = inflater.inflate(R.layout.fragment_chats, container, false);
         filterText = (EditText) view.findViewById(R.id.search_old_conv);
         chatList = (ListView) view.findViewById(R.id.chatList);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_write_msg);
@@ -57,8 +59,38 @@ public class ChatsFragment extends Fragment{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // make Toast when click
-                Toast.makeText(view.getContext(), "Position " + position + 1, Toast.LENGTH_LONG).show();
+                //TODO: open conversation when tapped
+                Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        chatList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setMessage("Do you want to delete conversation?");
+                        alertDialogBuilder.setPositiveButton("yes",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        //TODO: delete conversation
+                                        Object toRemove = adapter.getItem(position);
+                                        adapter.remove(toRemove);
+                                        Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return true;
             }
         });
 

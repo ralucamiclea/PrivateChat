@@ -1,5 +1,7 @@
 package com.dirtybits.privatechat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -58,7 +59,7 @@ public class ContactsFragment extends Fragment{
                 user = filterText.getText().toString();
                 //TODO: verify that the username exists
                 adapter.add(user);
-                Toast.makeText(view.getContext(), "User added successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -69,8 +70,39 @@ public class ContactsFragment extends Fragment{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // make Toast when click
-                Toast.makeText(view.getContext(), "Position " + position + 1, Toast.LENGTH_LONG).show();
+                //TODO: open conversation when tapped
+                Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        friendList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setMessage("Do you want to delete contact?");
+                alertDialogBuilder.setPositiveButton("yes",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //TODO: delete contact
+                                Object toRemove = adapter.getItem(position);
+                                adapter.remove(toRemove);
+                                Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return true;
             }
         });
 

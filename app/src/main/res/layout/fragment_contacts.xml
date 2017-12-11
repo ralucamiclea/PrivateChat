@@ -45,9 +45,9 @@
         android:layout_alignParentRight="true"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/colorFABbg"
-        android:tint="@color/colorWhite"
-        android:src="@drawable/ic_add_conv"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:tint="@color/textColorPrimary"
+        android:src="@drawable/ic_add_friend"
         />
 
 </RelativeLayout>
