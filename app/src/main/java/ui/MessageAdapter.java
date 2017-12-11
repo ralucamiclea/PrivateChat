@@ -38,6 +38,11 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
         this.layoutResID = layoutResourceID;
     }
 
+    public void remove(Message msg){
+        listBackup.remove(msg);
+        notifyDataSetChanged();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemHolder itemHolder;

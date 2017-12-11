@@ -79,6 +79,7 @@ public class ChatsFragment extends Fragment{
                                         //TODO: delete conversation from storage
                                         Message toRemove = adapter.getItem(position);
                                         list.remove(toRemove);
+                                        adapter.remove(toRemove);
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
                                     }
