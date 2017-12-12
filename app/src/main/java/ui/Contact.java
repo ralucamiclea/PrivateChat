@@ -9,7 +9,6 @@ public class Contact {
     private int image;
 
     public Contact(String username, int image) {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
         this.username = username;
         this.image = image;
     }
@@ -17,8 +16,5 @@ public class Contact {
     public String getName() {
         return username;
     }
-    public int getImage() {
-        return image;
-    }
-
+    public int getImage() { return image; }
 }

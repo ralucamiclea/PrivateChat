@@ -49,55 +49,73 @@ public class ChatsFragment extends Fragment{
         chatList = (ListView) view.findViewById(R.id.chatList);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_write_msg);
 
-        //TODO: get usernames from the server
-        Message[] values = {new Message("friend1"), new Message("friend2"), new Message("friend3"), new Message("friend4"), new Message("friend5"), new Message("friend6"),new Message("friend7")};
+
+        /*Start a new conversastion.*/
+        //TODO: decide how to actually start a new conversation
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            startActivity(new Intent(getActivity(), Conversation.class));
+            }
+        });
+
+
+        /*Get conversation details from storage*/
+        //TODO: get usernames from storage
+        Message[] values = {new Message("friend1", R.drawable.ic_chat), new Message("friend2", R.drawable.ic_chat), new Message("friend3", R.drawable.ic_chat), new Message("friend4", R.drawable.ic_chat), new Message("friend5", R.drawable.ic_chat), new Message("friend6", R.drawable.ic_chat),new Message("friend7", R.drawable.ic_chat)};
         list = new ArrayList<Message>();
         Collections.addAll(list,values);
 
+        /*Set the custom adapter for the conversations list.*/
         adapter = new MessageAdapter(getActivity(), R.layout.item_chat, list);
         chatList.setAdapter(adapter);
 
+
+        /*Open this specific conversation*/
         chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: open conversation when tapped
-                Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
+            //TODO: open conversation when tapped
+            Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
             }
         });
 
+
+        /*Delete specific conversation from the list*/
         chatList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setMessage("Do you want to delete conversation?");
-                        alertDialogBuilder.setPositiveButton("yes",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface arg0, int arg1) {
-                                        //TODO: delete conversation from storage
-                                        Message toRemove = adapter.getItem(position);
-                                        list.remove(toRemove);
-                                        adapter.remove(toRemove);
-                                        adapter.notifyDataSetChanged();
-                                        Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
-                                    }
-                                });
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setMessage("Do you want to delete conversation?");
+                alertDialogBuilder.setPositiveButton("yes",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                        //TODO: delete conversation from storage
+                        Message toRemove = adapter.getItem(position);
+                        list.remove(toRemove);
+                        adapter.remove(toRemove); //TODO: fix this doube list issue
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
+                    }});
 
-                alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                }
+            });
 
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-                return true;
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+            return true;
             }
         });
 
+
+        /*Search through the list for a conversation with a specific friend*/
         filterText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -111,15 +129,6 @@ public class ChatsFragment extends Fragment{
 
             @Override
             public void afterTextChanged(Editable s) {
-                ChatsFragment.this.adapter.getFilter().filter(s);
-            }
-        });
-
-        //start a conversastion
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), Conversation.class));
             }
         });
 

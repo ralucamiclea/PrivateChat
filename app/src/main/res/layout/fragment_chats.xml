@@ -42,12 +42,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="100dp"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/colorPrimaryDark"
-        android:tint="@color/textColorPrimary"
         android:src="@drawable/ic_new_conv"
-        />
+        android:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/colorPrimaryDark" />
 
 </RelativeLayout>

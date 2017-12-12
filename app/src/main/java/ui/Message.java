@@ -5,15 +5,17 @@ package ui;
  */
 
 public class Message {
-    private String username;
 
-    public Message(String username) {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    private String username;
+    private int image;
+
+    public Message(String username, int image) {
         this.username = username;
+        this.image = image;
     }
 
     public String getName() {
         return username;
     }
-
+    public int getImage() { return image; }
 }

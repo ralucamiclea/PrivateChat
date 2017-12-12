@@ -50,66 +50,79 @@ public class ContactsFragment extends Fragment{
         friendList = (ListView) view.findViewById(R.id.friendList);
         fab = (FloatingActionButton) view.findViewById(R.id.fab_add_friend);
 
-        //TODO: get usernames from the server
-        Contact[] values = {new Contact("friend1", R.drawable.ic_tree), new Contact("friend2", R.drawable.ic_tree), new Contact("friend3", R.drawable.ic_tree), new Contact("friend4", R.drawable.ic_tree), new Contact("friend5", R.drawable.ic_tree), new Contact("friend6", R.drawable.ic_tree),new Contact("friend7", R.drawable.ic_tree)};
+
+        /*Get conversation details from storage*/
+        //TODO: get usernames from storage
+        Contact[] values = {new Contact("friend1", R.drawable.ic_user), new Contact("friend2", R.drawable.ic_user), new Contact("friend3", R.drawable.ic_user), new Contact("friend4", R.drawable.ic_user), new Contact("friend5", R.drawable.ic_user), new Contact("friend6", R.drawable.ic_user),new Contact("friend7", R.drawable.ic_user)};
         list = new ArrayList<Contact>();
         Collections.addAll(list,values);
 
+        /*Set the custom adapter for the contact list.*/
         adapter = new ContactsAdapter(getActivity(), R.layout.item_contact, list);
-        //adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
         friendList.setAdapter(adapter);
 
+
+        /*Add a new friend*/
+        //TODO: decide how to actually add a new friend
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user = filterText.getText().toString();
-                //TODO: verify that the username exists
-                Contact obj = new Contact(user,R.drawable.ic_tree);
-                adapter.add(obj);
-                Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
+            user = filterText.getText().toString();
+            //TODO: verify that the username exists
+            Contact obj = new Contact(user,R.drawable.ic_tree);
+            adapter.add(obj);
+            Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
             }
         });
 
+
+        /*Open a conversation with this specific contact*/
         friendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: open conversation when tapped
-                Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
+            //TODO: open conversation when tapped
+            Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
             }
         });
 
+
+        /*Delete specific contact from the list*/
         friendList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setMessage("Do you want to delete contact?");
-                alertDialogBuilder.setPositiveButton("yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                //TODO: delete conversation from storage
-                                Contact toRemove = adapter.getItem(position);
-                                adapter.remove(toRemove);
-                                Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-                alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setMessage("Do you want to delete contact?");
+            alertDialogBuilder.setPositiveButton("yes",
+                new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    //TODO: delete conversation from storage
+                    Contact toRemove = adapter.getItem(position);
+                    list.remove(toRemove);
+                    adapter.remove(toRemove); //TODO: fix this doube list issue
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
                     }
                 });
 
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-                return true;
+            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+            return true;
             }
         });
 
+
+        /*Search through the list for a contacts for a specific friend*/
         filterText.addTextChangedListener(new TextWatcher() {
 
             @Override
