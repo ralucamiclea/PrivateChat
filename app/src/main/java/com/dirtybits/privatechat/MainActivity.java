@@ -1,6 +1,7 @@
 package com.dirtybits.privatechat;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    FloatingActionButton fab;
+    ChatsFragment frag1 = new ChatsFragment();
+    ContactsFragment frag2 = new ContactsFragment();
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,6 +49,43 @@ public class MainActivity extends AppCompatActivity {
         //Assigns the ViewPager to TabLayout.
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+
+        /*Manage fab on all tabs*/
+        frag1.shareFab(fab); // init the FAB
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        fab.hide(); // Hide animation
+                        break;
+                    case ViewPager.SCROLL_STATE_IDLE:
+                        switch (viewPager.getCurrentItem()) {
+                            case 0:
+                                frag2.shareFab(null); // Remove FAB from fragment
+                                frag1.shareFab(fab); // Share FAB to new displayed fragment
+                                break;
+                            case 1:
+                            default:
+                                frag1.shareFab(null); // Remove FAB from fragment
+                                frag2.shareFab(fab); // Share FAB to new displayed fragment
+                                break;
+                        }
+                        fab.show(); // Show animation
+                        break;
+                }
+            }
+        });
     }
 
     private void setupTabIcons() {
@@ -52,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ChatsFragment(), "chats");
-        adapter.addFragment(new ContactsFragment(), "contacts");
+        adapter.addFragment(frag1, "chats");
+        adapter.addFragment(frag2, "contacts");
         viewPager.setAdapter(adapter);
     }
 

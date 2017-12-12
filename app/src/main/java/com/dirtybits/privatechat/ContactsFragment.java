@@ -2,6 +2,7 @@ package com.dirtybits.privatechat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -48,7 +49,6 @@ public class ContactsFragment extends Fragment{
 
         filterText = (EditText) view.findViewById(R.id.search_friend);
         friendList = (ListView) view.findViewById(R.id.friendList);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_add_friend);
 
 
         /*Get conversation details from storage*/
@@ -60,20 +60,6 @@ public class ContactsFragment extends Fragment{
         /*Set the custom adapter for the contact list.*/
         adapter = new ContactsAdapter(getActivity(), R.layout.item_contact, list);
         friendList.setAdapter(adapter);
-
-
-        /*Add a new friend*/
-        //TODO: decide how to actually add a new friend
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            user = filterText.getText().toString();
-            //TODO: verify that the username exists
-            Contact obj = new Contact(user,R.drawable.ic_tree);
-            adapter.add(obj);
-            Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
-            }
-        });
 
 
         /*Open a conversation with this specific contact*/
@@ -140,6 +126,39 @@ public class ContactsFragment extends Fragment{
         });
 
         return view;
+    }
+
+
+    /*Control the shared fab. Add a new friend*/
+    public void shareFab(FloatingActionButton sfab) {
+        if (sfab == null) { // When the FAB is shared to another Fragment
+            if (fab != null) {
+                fab.setOnClickListener(null);
+            }
+            fab = null;
+        }
+        else {
+            fab = sfab;
+            fab.setImageResource(R.drawable.ic_add_friend);
+            //TODO: decide how to actually start a new conversation
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO: decide how to actually add a new friend
+                    user = filterText.getText().toString();
+                    //TODO: verify that the username exists
+                    Contact obj = new Contact(user,R.drawable.ic_tree);
+                    adapter.add(obj);
+                    Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fab = null; // To avoid keeping/leaking the reference of the FAB
     }
 
 }

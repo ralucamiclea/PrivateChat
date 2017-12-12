@@ -38,4 +38,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_main"
+        app:layout_anchor="@id/viewpager"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_tree"
+        app:borderWidth="@dimen/fab_border_width"
+        app:fabSize="normal"
+        android:tint="@color/textColorPrimary"
+        app:backgroundTint="@color/colorPrimaryDark"/>
+
 </android.support.design.widget.CoordinatorLayout>

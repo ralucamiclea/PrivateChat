@@ -47,17 +47,6 @@ public class ChatsFragment extends Fragment{
         final View view = inflater.inflate(R.layout.fragment_chats, container, false);
         filterText = (EditText) view.findViewById(R.id.search_old_conv);
         chatList = (ListView) view.findViewById(R.id.chatList);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_write_msg);
-
-
-        /*Start a new conversastion.*/
-        //TODO: decide how to actually start a new conversation
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            startActivity(new Intent(getActivity(), Conversation.class));
-            }
-        });
 
 
         /*Get conversation details from storage*/
@@ -135,4 +124,30 @@ public class ChatsFragment extends Fragment{
         return view;
     }
 
+    /*Control the shared fab. Start a new conversation.*/
+    public void shareFab(FloatingActionButton sfab) {
+        if (sfab == null) { // When the FAB is shared to another Fragment
+            if (fab != null) {
+                fab.setOnClickListener(null);
+            }
+            fab = null;
+        }
+        else {
+            fab = sfab;
+            fab.setImageResource(R.drawable.ic_new_conv);
+            //TODO: decide how to actually start a new conversation
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                startActivity(new Intent(getActivity(), Conversation.class));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fab = null; // To avoid keeping/leaking the reference of the FAB
+    }
 }

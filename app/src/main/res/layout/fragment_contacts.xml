@@ -39,18 +39,5 @@
         android:layout_alignStart="@+id/search_friend"
         />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add_friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="100dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_add_friend"
-        android:tint="@color/textColorPrimary"
-        app:backgroundTint="@color/colorPrimaryDark" />
-
 </RelativeLayout>
 
