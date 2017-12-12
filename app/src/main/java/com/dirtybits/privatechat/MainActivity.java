@@ -1,5 +1,6 @@
 package com.dirtybits.privatechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -9,15 +10,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import auth.User;
 
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     ChatsFragment frag1 = new ChatsFragment();
     ContactsFragment frag2 = new ContactsFragment();
+    private User loggedUser = null;
+    private static final int REQ_SIGNIN = 3;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -30,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+        //start login activity
+        if(loggedUser == null) {
+            Log.v("MainActivity", "No user is logged so start Login activity.");
+            startActivityForResult(new Intent(getApplicationContext(), Login.class), REQ_SIGNIN);
+        }
+        */
 
         fab = (FloatingActionButton) findViewById(R.id.fab_main);
 
@@ -126,6 +140,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_SIGNIN) {
+            if (resultCode == RESULT_OK) {
+                // get data from intent
+                String user = data.getStringExtra("user");
+                String pass = data.getStringExtra("pass");
+                Log.v("MainActivity", "A user logged in: " + user + " " + pass);
+                loggedUser = new User(user, pass);
+            } else if (resultCode == RESULT_CANCELED) {
+                //user data was not retrieved
+                Log.v("MainActivity", "NO user logged in.");
+                startActivity(new Intent(MainActivity.this, Login.class));
+            }
         }
     }
 }

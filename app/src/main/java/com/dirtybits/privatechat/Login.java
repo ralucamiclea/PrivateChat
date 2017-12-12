@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +16,6 @@ public class Login extends AppCompatActivity {
     EditText username, password;
     Button loginButton;
     String user, pass;
-    private static final String KEY_NAME = "key_name";
-    private static final String KEY_PASS = "key_password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +48,13 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter a password.");
                 }
                 else{
-                    //TODO: check if the user exists and login to the specific account
+                    //TODO: check if the user exists
+                    Log.v("Login", "Log in the user and start Main.");
                     Intent intent = new Intent(Login.this, MainActivity.class);
-                    intent.putExtra(KEY_NAME, user);
-                    intent.putExtra(KEY_PASS, pass);
-                    startActivity(intent);
+                    intent.putExtra("user", user);
+                    intent.putExtra("pass", pass);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
 
             }
