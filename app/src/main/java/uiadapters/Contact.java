@@ -1,4 +1,4 @@
-package ui;
+package uiadapters;
 
 /**
  * Created by raluca.miclea on 12/11/2017.

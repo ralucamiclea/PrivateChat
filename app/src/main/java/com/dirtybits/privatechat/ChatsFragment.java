@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ui.Message;
-import ui.MessageAdapter;
+import uiadapters.Message;
+import uiadapters.MessageAdapter;
 
 public class ChatsFragment extends Fragment{
 

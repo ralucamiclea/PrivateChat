@@ -1,4 +1,4 @@
-package ui;
+package uiadapters;
 
 import android.app.Activity;
 import android.content.Context;

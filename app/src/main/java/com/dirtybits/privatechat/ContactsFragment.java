@@ -1,9 +1,7 @@
 package com.dirtybits.privatechat;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,18 +15,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import ui.Contact;
-import ui.ContactsAdapter;
+import internalstorage.ContactsInternalStorage;
+import uiadapters.Contact;
+import uiadapters.ContactsAdapter;
 
 public class ContactsFragment extends Fragment{
 
@@ -60,7 +52,7 @@ public class ContactsFragment extends Fragment{
 
         /*Get conversation details from storage*/
         list = new ArrayList<Contact>();
-        List<String> contactUsernames= new ArrayList<>(loadContactsFromFile(getContext()));
+        List<String> contactUsernames= new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext()));
         for (String contact:contactUsernames
              ) {
             list.add(new Contact(contact, R.drawable.ic_user));
@@ -95,10 +87,10 @@ public class ContactsFragment extends Fragment{
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                    //TODO: delete conversation from storage
                     Contact toRemove = adapter.getItem(position);
+                    ContactsInternalStorage.deleteContactFromFile(getContext(),toRemove.getName());
                     list.remove(toRemove);
-                    adapter.remove(toRemove); //TODO: fix this doube list issue
+                    adapter.remove(toRemove); //TODO: fix this double list issue
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
                     }
@@ -155,8 +147,9 @@ public class ContactsFragment extends Fragment{
                 public void onClick(View view) {
                     user = filterText.getText().toString();
                     //TODO: verify that the username is valid
+                    //TODO: verify that the username is not already a contact
                     Contact obj = new Contact(user,R.drawable.ic_user);
-                    saveContactsToFile(getContext(), user); //save contact in phone storage
+                    ContactsInternalStorage.saveContactsToFile(getContext(), user); //save contact in phone storage
                     list.add(obj);
                     adapter.add(obj);
                     adapter.notifyDataSetChanged();
@@ -170,44 +163,5 @@ public class ContactsFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         fab = null; // To avoid keeping/leaking the reference of the FAB
-    }
-
-    /*Save contacts in binary files on the phone*/
-    public void saveContactsToFile(Context context, String contactUsername) {
-        String fileName = contactUsername;
-
-        try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(contactUsername);
-            os.close();
-            fos.close();
-        } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to store contact.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
-
-    /*Load contacts from binary files in the phone*/
-    public List<String> loadContactsFromFile(Context context) {
-        try {
-            List<String> contacts = new ArrayList<>();
-
-            for (File file : context.getFilesDir().listFiles()) {
-                FileInputStream fis = context.openFileInput(file.getName());
-                ObjectInputStream is = new ObjectInputStream(fis);
-                String contact = (String) is.readObject();
-                contacts.add(contact);
-                is.close();
-                fis.close();
-            }
-
-            return contacts;
-        } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to load contact.", Toast.LENGTH_SHORT).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
