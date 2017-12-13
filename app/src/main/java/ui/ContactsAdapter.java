@@ -43,6 +43,11 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         listBackup.remove(cnt);
     }
 
+    public void add(Contact cnt){
+        list.add(cnt);
+        listBackup.add(cnt);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemHolder itemHolder;

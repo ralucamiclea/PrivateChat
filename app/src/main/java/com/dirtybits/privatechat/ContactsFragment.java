@@ -1,6 +1,7 @@
 package com.dirtybits.privatechat;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,10 +59,13 @@ public class ContactsFragment extends Fragment{
 
 
         /*Get conversation details from storage*/
-        //TODO: get usernames from storage
-        Contact[] values = {new Contact("friend1", R.drawable.ic_user), new Contact("friend2", R.drawable.ic_user), new Contact("friend3", R.drawable.ic_user), new Contact("friend4", R.drawable.ic_user), new Contact("friend5", R.drawable.ic_user), new Contact("friend6", R.drawable.ic_user),new Contact("friend7", R.drawable.ic_user)};
         list = new ArrayList<Contact>();
-        Collections.addAll(list,values);
+        List<String> contactUsernames= new ArrayList<>(loadContactsFromFile(getContext()));
+        for (String contact:contactUsernames
+             ) {
+            list.add(new Contact(contact, R.drawable.ic_user));
+        }
+
 
         /*Set the custom adapter for the contact list.*/
         adapter = new ContactsAdapter(getActivity(), R.layout.item_contact, list);
@@ -140,15 +150,16 @@ public class ContactsFragment extends Fragment{
         else {
             fab = sfab;
             fab.setImageResource(R.drawable.ic_add_friend);
-            //TODO: decide how to actually start a new conversation
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO: decide how to actually add a new friend
                     user = filterText.getText().toString();
-                    //TODO: verify that the username exists
-                    Contact obj = new Contact(user,R.drawable.ic_tree);
+                    //TODO: verify that the username is valid
+                    Contact obj = new Contact(user,R.drawable.ic_user);
+                    saveContactsToFile(getContext(), user); //save contact in phone storage
+                    list.add(obj);
                     adapter.add(obj);
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
                 }
             });
@@ -161,4 +172,42 @@ public class ContactsFragment extends Fragment{
         fab = null; // To avoid keeping/leaking the reference of the FAB
     }
 
+    /*Save contacts in binary files on the phone*/
+    public void saveContactsToFile(Context context, String contactUsername) {
+        String fileName = contactUsername;
+
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(contactUsername);
+            os.close();
+            fos.close();
+        } catch (IOException e) {
+            Toast.makeText(context, "Cannot access local data to store contact.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    /*Load contacts from binary files in the phone*/
+    public List<String> loadContactsFromFile(Context context) {
+        try {
+            List<String> contacts = new ArrayList<>();
+
+            for (File file : context.getFilesDir().listFiles()) {
+                FileInputStream fis = context.openFileInput(file.getName());
+                ObjectInputStream is = new ObjectInputStream(fis);
+                String contact = (String) is.readObject();
+                contacts.add(contact);
+                is.close();
+                fis.close();
+            }
+
+            return contacts;
+        } catch (IOException e) {
+            Toast.makeText(context, "Cannot access local data to load contact.", Toast.LENGTH_SHORT).show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
