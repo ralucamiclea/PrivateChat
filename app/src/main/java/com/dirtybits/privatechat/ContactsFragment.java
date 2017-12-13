@@ -146,14 +146,23 @@ public class ContactsFragment extends Fragment{
                 @Override
                 public void onClick(View view) {
                     user = filterText.getText().toString();
-                    //TODO: verify that the username is valid
-                    //TODO: verify that the username is not already a contact
-                    Contact obj = new Contact(user,R.drawable.ic_user);
-                    ContactsInternalStorage.saveContactsToFile(getContext(), user); //save contact in phone storage
-                    list.add(obj);
-                    adapter.add(obj);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
+                    //check for empty username
+                    if(user.equals(""))
+                        Toast.makeText(view.getContext(), "Please enter a username!", Toast.LENGTH_LONG).show();
+                    else {
+                        //verify that the username is not already a contact
+                        if(ContactsInternalStorage.loadContactsFromFile(getContext()).contains(user))
+                            Toast.makeText(view.getContext(), user + " is already a friend!", Toast.LENGTH_LONG).show();
+                        else {
+                            //TODO: verify that the username exists @DATABASE
+                            Contact obj = new Contact(user, R.drawable.ic_user);
+                            ContactsInternalStorage.saveContactsToFile(getContext(), user); //save contact in phone storage
+                            list.add(obj);
+                            adapter.add(obj); //TODO: fix this double list issue
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
+                        }
+                    }
                 }
             });
         }

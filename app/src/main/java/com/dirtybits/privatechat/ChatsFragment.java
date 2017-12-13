@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import uiadapters.Message;
+import uiadapters.Chat;
 import uiadapters.MessageAdapter;
 
 public class ChatsFragment extends Fragment{
 
     FloatingActionButton fab;
     ListView chatList;
-    List<Message> list;
+    List<Chat> list;
     MessageAdapter adapter;
     EditText filterText;
 
@@ -51,8 +51,8 @@ public class ChatsFragment extends Fragment{
 
         /*Get conversation details from storage*/
         //TODO: get usernames from storage
-        Message[] values = {new Message("friend1", R.drawable.ic_chat), new Message("friend2", R.drawable.ic_chat), new Message("friend3", R.drawable.ic_chat), new Message("friend4", R.drawable.ic_chat), new Message("friend5", R.drawable.ic_chat), new Message("friend6", R.drawable.ic_chat),new Message("friend7", R.drawable.ic_chat)};
-        list = new ArrayList<Message>();
+        Chat[] values = {new Chat("friend1", R.drawable.ic_chat), new Chat("friend2", R.drawable.ic_chat), new Chat("friend3", R.drawable.ic_chat), new Chat("friend4", R.drawable.ic_chat), new Chat("friend5", R.drawable.ic_chat), new Chat("friend6", R.drawable.ic_chat),new Chat("friend7", R.drawable.ic_chat)};
+        list = new ArrayList<Chat>();
         Collections.addAll(list,values);
 
         /*Set the custom adapter for the conversations list.*/
@@ -83,7 +83,7 @@ public class ChatsFragment extends Fragment{
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                         //TODO: delete conversation from storage
-                        Message toRemove = adapter.getItem(position);
+                        Chat toRemove = adapter.getItem(position);
                         list.remove(toRemove);
                         adapter.remove(toRemove); //TODO: fix this doube list issue
                         adapter.notifyDataSetChanged();

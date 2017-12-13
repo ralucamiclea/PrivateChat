@@ -23,14 +23,14 @@ import java.util.List;
  * Created by raluca.miclea on 12/11/2017.
  */
 
-public class MessageAdapter extends ArrayAdapter<Message> implements Filterable {
+public class MessageAdapter extends ArrayAdapter<Chat> implements Filterable {
 
     private Context context;
-    private List<Message> list;
-    private List<Message> listBackup;
+    private List<Chat> list;
+    private List<Chat> listBackup;
     private int layoutResID;
 
-    public MessageAdapter(Context context, int layoutResourceID, List<Message> list) {
+    public MessageAdapter(Context context, int layoutResourceID, List<Chat> list) {
         super(context, layoutResourceID, list);
         this.context = context;
         this.list = list;
@@ -39,7 +39,7 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
         this.layoutResID = layoutResourceID;
     }
 
-    public void remove(Message msg){
+    public void remove(Chat msg){
         list.remove(msg);
         listBackup.remove(msg);
     }
@@ -48,7 +48,7 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemHolder itemHolder;
         View view = convertView;
-        Message hItem = getItem(position);
+        Chat hItem = getItem(position);
 
         if (view == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -84,7 +84,7 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
 
     @Nullable
     @Override
-    public Message getItem(int position) {
+    public Chat getItem(int position) {
         try {
             return list.get(position);
         } catch (Exception e) {
@@ -99,14 +99,14 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                ArrayList<Message> tempList=new ArrayList<Message>();
+                ArrayList<Chat> tempList=new ArrayList<Chat>();
                 if(constraint == null)
                     filterResults.values = listBackup;
                 if(constraint != null && listBackup != null) {
                     int length=listBackup.size();
                     int i=0;
                     while(i<length){
-                        Message item=listBackup.get(i);
+                        Chat item=listBackup.get(i);
                         Log.v("MessageAdapter", length + " " +item.getName() + " : " + constraint.toString());
                         if(item.getName().startsWith(constraint.toString())) {
                             Log.v("MessageAdapter", item.getName() + " : " + constraint.toString());
@@ -122,7 +122,7 @@ public class MessageAdapter extends ArrayAdapter<Message> implements Filterable 
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                list = (ArrayList<Message>) results.values;
+                list = (ArrayList<Chat>) results.values;
                 notifyDataSetChanged();
             }
 
