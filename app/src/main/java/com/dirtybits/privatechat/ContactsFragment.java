@@ -88,9 +88,10 @@ public class ContactsFragment extends Fragment{
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                     Contact toRemove = adapter.getItem(position);
+                    //delete from internal storage
                     ContactsInternalStorage.deleteContactFromFile(getContext(),toRemove.getName());
-                    list.remove(toRemove);
-                    adapter.remove(toRemove); //TODO: fix this double list issue
+                    //delete from the ListView
+                    adapter.remove(toRemove);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(),"Contact deleted.",Toast.LENGTH_LONG).show();
                     }
@@ -156,9 +157,10 @@ public class ContactsFragment extends Fragment{
                         else {
                             //TODO: verify that the username exists @DATABASE
                             Contact obj = new Contact(user, R.drawable.ic_user);
+                            //add in internal storage
                             ContactsInternalStorage.saveContactsToFile(getContext(), user); //save contact in phone storage
-                            list.add(obj);
-                            adapter.add(obj); //TODO: fix this double list issue
+                            //add in ListView
+                            adapter.add(obj);
                             adapter.notifyDataSetChanged();
                             Toast.makeText(view.getContext(), "New friend added!", Toast.LENGTH_LONG).show();
                         }

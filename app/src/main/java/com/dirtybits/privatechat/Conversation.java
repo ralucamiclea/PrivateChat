@@ -2,6 +2,7 @@ package com.dirtybits.privatechat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,6 +16,7 @@ import uiadapters.ConversationAdapter;
 
 public class Conversation extends AppCompatActivity {
 
+    private boolean who = false;
     private EditText msgEditText;
     private ImageButton sendButton;
     private ListView msgListView;
@@ -51,10 +53,12 @@ public class Conversation extends AppCompatActivity {
 
     public void sendTextMessage(View v) {
         String message = msgEditText.getEditableText().toString();
+        //TODO: actually handle a 2 ppl conversation
+        who ^= true;
 
         if (!message.equalsIgnoreCase("")) {
-            Message chatMessage = new Message(user1, user2, message, "" + random.nextInt(1000), true);
-            chatMessage.setMsgID();
+            Message chatMessage = new Message(user1, user2, message, "" + random.nextInt(1000), who);
+            Log.v("Conversation", "Who = " + who);
             msgEditText.setText("");
             adapter.add(chatMessage);
             adapter.notifyDataSetChanged();

@@ -54,18 +54,17 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         View view = convertView;
 
         if (view == null) {
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        itemHolder = new ItemHolder();
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            itemHolder = new ItemHolder();
 
-        view = inflater.inflate(layoutResID, parent, false);
-        itemHolder.tName = (TextView) view.findViewById(R.id.tName);
-        itemHolder.lHeader = (RelativeLayout) view.findViewById(R.id.lHeader);
-        itemHolder.contact_image = (ImageView) view.findViewById(R.id.contact_image);
+            view = inflater.inflate(layoutResID, parent, false);
+            itemHolder.tName = (TextView) view.findViewById(R.id.tName);
+            itemHolder.lHeader = (RelativeLayout) view.findViewById(R.id.lHeader);
+            itemHolder.contact_image = (ImageView) view.findViewById(R.id.contact_image);
 
-        view.setTag(itemHolder);
-
+            view.setTag(itemHolder);
         } else {
-        itemHolder = (ItemHolder) view.getTag();
+            itemHolder = (ItemHolder) view.getTag();
         }
 
         final Contact hItem = list.get(position);

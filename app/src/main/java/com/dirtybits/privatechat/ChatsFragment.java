@@ -21,14 +21,14 @@ import java.util.Collections;
 import java.util.List;
 
 import uiadapters.Chat;
-import uiadapters.MessageAdapter;
+import uiadapters.ChatAdapter;
 
 public class ChatsFragment extends Fragment{
 
     FloatingActionButton fab;
     ListView chatList;
     List<Chat> list;
-    MessageAdapter adapter;
+    ChatAdapter adapter;
     EditText filterText;
 
     public ChatsFragment() {
@@ -56,7 +56,7 @@ public class ChatsFragment extends Fragment{
         Collections.addAll(list,values);
 
         /*Set the custom adapter for the conversations list.*/
-        adapter = new MessageAdapter(getActivity(), R.layout.item_chat, list);
+        adapter = new ChatAdapter(getActivity(), R.layout.item_chat, list);
         chatList.setAdapter(adapter);
 
 

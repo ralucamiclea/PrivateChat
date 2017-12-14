@@ -23,14 +23,14 @@ import java.util.List;
  * Created by raluca.miclea on 12/11/2017.
  */
 
-public class MessageAdapter extends ArrayAdapter<Chat> implements Filterable {
+public class ChatAdapter extends ArrayAdapter<Chat> implements Filterable {
 
     private Context context;
     private List<Chat> list;
     private List<Chat> listBackup;
     private int layoutResID;
 
-    public MessageAdapter(Context context, int layoutResourceID, List<Chat> list) {
+    public ChatAdapter(Context context, int layoutResourceID, List<Chat> list) {
         super(context, layoutResourceID, list);
         this.context = context;
         this.list = list;
@@ -107,9 +107,9 @@ public class MessageAdapter extends ArrayAdapter<Chat> implements Filterable {
                     int i=0;
                     while(i<length){
                         Chat item=listBackup.get(i);
-                        Log.v("MessageAdapter", length + " " +item.getName() + " : " + constraint.toString());
+                        Log.v("ChatAdapter", length + " " +item.getName() + " : " + constraint.toString());
                         if(item.getName().startsWith(constraint.toString())) {
-                            Log.v("MessageAdapter", item.getName() + " : " + constraint.toString());
+                            Log.v("ChatAdapter", item.getName() + " : " + constraint.toString());
                             tempList.add(item);
                         }
                         i++;
