@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,12 +30,17 @@ public class MessagesInternalStorage {
 
     /*Save msgs in binary files in INTERNAL STORAGE*/
     public static void saveMsgToFile(Context context, Message msg) {
-        String fileName = "msg" + msg.getMsgId();
+
+        String fileName = "jmsg";
+
+        Gson gson = new Gson();
+        String json = gson.toJson(msg);
+        Log.i("GSON", "Msg converted to JSON : " + json);
 
         try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_APPEND);
             ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(msg);
+            os.writeObject(json);
             os.close();
             fos.close();
         } catch (IOException e) {
@@ -76,20 +83,22 @@ public class MessagesInternalStorage {
 
     /*Load msgs from binary files in INTERNAL STORAGE*/
     public static List<Message> loadMsgFromFile(Context context) {
+        Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().startsWith("msg")) {
+                if(file.getName().equals("jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     ObjectInputStream is = new ObjectInputStream(fis);
-                    Message msg = (Message) is.readObject();
+                    String m = (String) is.readObject();
+                    Log.i("GSON", "READ MSG : " + m);
+                    Message msg = gson.fromJson(m, Message.class);
                     msgs.add(msg);
                     is.close();
                     fis.close();
                 }
             }
-
             return msgs;
         } catch (IOException e) {
             Toast.makeText(context, "Cannot access local data to load msgs.", Toast.LENGTH_SHORT).show();
