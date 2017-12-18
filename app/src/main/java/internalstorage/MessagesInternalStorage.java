@@ -34,50 +34,49 @@ public class MessagesInternalStorage {
         String fileName = "jmsg";
 
         Gson gson = new Gson();
-        String json = gson.toJson(msg);
-        Log.i("GSON", "Msg converted to JSON : " + json);
+        List<Message> messages = MessagesInternalStorage.loadMsgFromFile(context);
+        if (messages != null) {
+            messages.add(msg);
 
-        try {
-            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_APPEND);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(json);
-            os.close();
-            fos.close();
-        } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to store msg.", Toast.LENGTH_SHORT).show();
-            return;
+            String json = gson.toJson(messages);
+            Log.i("GSON", "Msg converted to JSON : " + json);
+
+            try {
+                FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+                fos.write(json.getBytes());
+                fos.close();
+            } catch (IOException e) {
+                Toast.makeText(context, "Cannot access local data to store msg.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     /*Delete msg from binary files in INTERNAL STORAGE*/
     public static void deleteMsgFromFile(Context context, Message msg) {
+        Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
-            boolean flag = false;
 
             for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().startsWith("msg")) {
+                if (file.getName().equals("jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
-                    ObjectInputStream is = new ObjectInputStream(fis);
-                    Message m = (Message) is.readObject();
-                    is.close();
+                    byte buffer[] = new byte[fis.available()];
+                    fis.read(buffer);
+                    String m = new String(buffer);
+                    Log.i("GSON", "READ MSG : " + m);
+                    msgs = gson.fromJson(m, new TypeToken<List<Message>>() {
+                    }.getType());
                     fis.close();
-                    if (m.equals(msg)) {
-                        Log.v("DeleteStorage", "Try to delete msg.");
-                        flag = file.delete();
-                        break;
-                    }
                 }
             }
-            if(flag == false) {
-                Log.v("DeleteStorage", "Cannot delete msg.");
-                Toast.makeText(context, "Cannot delete msg.", Toast.LENGTH_SHORT).show();
+            if(msgs != null){
+                if(msgs.contains(msg)){
+                    msgs.remove(msg);
+                    Log.v("Delete Message", "Deleted message.");
+                }
             }
-            Log.v("DeleteStorage", "Deleted msg.");
         } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to load msg.", Toast.LENGTH_SHORT).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Toast.makeText(context, "Cannot access local data to load msgs.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -88,22 +87,20 @@ public class MessagesInternalStorage {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().equals("jmsg")) {
+                if (file.getName().equals("jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
-                    ObjectInputStream is = new ObjectInputStream(fis);
-                    String m = (String) is.readObject();
+                    byte buffer[] = new byte[fis.available()];
+                    fis.read(buffer);
+                    String m = new String(buffer);
                     Log.i("GSON", "READ MSG : " + m);
-                    msgs = gson.fromJson(m, new TypeToken<List<Message>>(){}.getType());
-                    //msgs.add(msg);
-                    is.close();
+                    msgs = gson.fromJson(m, new TypeToken<List<Message>>() {
+                    }.getType());
                     fis.close();
                 }
             }
             return msgs;
         } catch (IOException e) {
             Toast.makeText(context, "Cannot access local data to load msgs.", Toast.LENGTH_SHORT).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return null;
     }

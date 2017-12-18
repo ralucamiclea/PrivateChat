@@ -1,12 +1,16 @@
 package com.dirtybits.privatechat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,14 +41,14 @@ public class Conversation extends AppCompatActivity {
         msgListView = (ListView) findViewById(R.id.msgListView);
         sendButton= (ImageButton) findViewById(R.id.sendMessageButton);
 
-        // ----Set autoscroll of listview when a new message arrives----//
+        //Set autoscroll of listview when a new message arrives
         msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         msgListView.setStackFromBottom(true);
 
         if(MessagesInternalStorage.loadMsgFromFile(this) != null)
-            list = new ArrayList<Message>(MessagesInternalStorage.loadMsgFromFile(this));
+            list = new ArrayList<>(MessagesInternalStorage.loadMsgFromFile(this));
         else
-            list = new ArrayList<Message>();
+            list = new ArrayList<>();
         adapter = new ConversationAdapter(Conversation.this, list);
         msgListView.setAdapter(adapter);
     }

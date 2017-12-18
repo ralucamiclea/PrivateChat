@@ -51,6 +51,10 @@ public class ConversationAdapter extends BaseAdapter {
         chatMessageList.add(object);
     }
 
+    public void remove(Message object) {
+        chatMessageList.remove(object);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Message message = (Message) chatMessageList.get(position);
