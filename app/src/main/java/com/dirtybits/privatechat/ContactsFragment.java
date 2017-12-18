@@ -25,6 +25,7 @@ import uiadapters.ContactsAdapter;
 public class ContactsFragment extends Fragment{
 
     ListView friendList;
+    List<String> contactUsernames = null;
     List<Contact> list;
     String user;
     ContactsAdapter adapter;
@@ -52,11 +53,12 @@ public class ContactsFragment extends Fragment{
 
         /*Get conversation details from storage*/
         list = new ArrayList<Contact>();
-        List<String> contactUsernames= new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext()));
-        for (String contact:contactUsernames
-             ) {
-            list.add(new Contact(contact, R.drawable.ic_user));
-        }
+        if(ContactsInternalStorage.loadContactsFromFile(getContext()) != null)
+            contactUsernames= new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext()));
+        if(contactUsernames != null)
+            for (String contact:contactUsernames) {
+                list.add(new Contact(contact, R.drawable.ic_user));
+            }
 
 
         /*Set the custom adapter for the contact list.*/
@@ -152,7 +154,7 @@ public class ContactsFragment extends Fragment{
                         Toast.makeText(view.getContext(), "Please enter a username!", Toast.LENGTH_LONG).show();
                     else {
                         //verify that the username is not already a contact
-                        if(ContactsInternalStorage.loadContactsFromFile(getContext()).contains(user))
+                        if(ContactsInternalStorage.loadContactsFromFile(getContext())!=null && ContactsInternalStorage.loadContactsFromFile(getContext()).contains(user))
                             Toast.makeText(view.getContext(), user + " is already a friend!", Toast.LENGTH_LONG).show();
                         else {
                             //TODO: verify that the username exists @DATABASE

@@ -10,86 +10,89 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import uiadapters.Message;
+
 /**
- * Created by raluca.miclea on 12/13/2017.
+ * Created by raluca.miclea on 12/18/2017.
  */
 
-public class ContactsInternalStorage {
+public class MessagesInternalStorage implements Serializable {
 
-    public ContactsInternalStorage(){
+    public MessagesInternalStorage(){
         //
     }
 
-    /*Save contacts in binary files in INTERNAL STORAGE*/
-    public static void saveContactsToFile(Context context, String contactUsername) {
-        String fileName = "contact-" + contactUsername;
+    /*Save msgs in binary files in INTERNAL STORAGE*/
+    public static void saveMsgToFile(Context context, Message msg) {
+        String fileName = "msg" + msg.getMsgId();
 
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(contactUsername);
+            os.writeObject(msg);
             os.close();
             fos.close();
         } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to store contact.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Cannot access local data to store msg.", Toast.LENGTH_SHORT).show();
             return;
         }
     }
 
-    /*Delete contact from binary files in INTERNAL STORAGE*/
-    public static void deleteContactFromFile(Context context, String contactUsername) {
+    /*Delete msg from binary files in INTERNAL STORAGE*/
+    public static void deleteMsgFromFile(Context context, Message msg) {
         try {
-            List<String> contacts = new ArrayList<>();
+            List<Message> msgs = new ArrayList<>();
             boolean flag = false;
 
             for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().startsWith("contact-")) {
+                if(file.getName().startsWith("msg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     ObjectInputStream is = new ObjectInputStream(fis);
-                    String contact = (String) is.readObject();
+                    Message m = (Message) is.readObject();
                     is.close();
                     fis.close();
-                    if (contactUsername.equals(contact)) {
-                        Log.v("DeleteStorage", "Try to delete contact.");
+                    if (m.equals(msg)) {
+                        Log.v("DeleteStorage", "Try to delete msg.");
                         flag = file.delete();
                         break;
                     }
                 }
             }
             if(flag == false) {
-                Log.v("DeleteStorage", "Cannot delete contact.");
-                Toast.makeText(context, "Cannot delete contact.", Toast.LENGTH_SHORT).show();
+                Log.v("DeleteStorage", "Cannot delete msg.");
+                Toast.makeText(context, "Cannot delete msg.", Toast.LENGTH_SHORT).show();
             }
-            Log.v("DeleteStorage", "Deleted contact.");
+            Log.v("DeleteStorage", "Deleted msg.");
         } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to load contact.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Cannot access local data to load msg.", Toast.LENGTH_SHORT).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    /*Load contacts from binary files in INTERNAL STORAGE*/
-    public static List<String> loadContactsFromFile(Context context) {
+    /*Load msgs from binary files in INTERNAL STORAGE*/
+    public static List<Message> loadMsgFromFile(Context context) {
         try {
-            List<String> contacts = new ArrayList<>();
+            List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().startsWith("contact-")) {
+                if(file.getName().startsWith("msg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     ObjectInputStream is = new ObjectInputStream(fis);
-                    String contact = (String) is.readObject();
-                    contacts.add(contact);
+                    Message msg = (Message) is.readObject();
+                    msgs.add(msg);
                     is.close();
                     fis.close();
                 }
             }
 
-            return contacts;
+            return msgs;
         } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to load contact.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Cannot access local data to load msgs.", Toast.LENGTH_SHORT).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

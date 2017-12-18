@@ -25,13 +25,16 @@ public class ConversationAdapter extends BaseAdapter {
     ArrayList<Message> chatMessageList;
 
     public ConversationAdapter(Activity activity, ArrayList<Message> list) {
-        chatMessageList = list;
+        chatMessageList = new ArrayList<>(list);
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return chatMessageList.size();
+        if (chatMessageList != null)
+            return chatMessageList.size();
+        else
+            return 0;
     }
 
     @Override

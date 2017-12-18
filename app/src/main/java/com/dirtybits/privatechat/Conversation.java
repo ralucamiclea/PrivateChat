@@ -10,7 +10,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
+import internalstorage.MessagesInternalStorage;
 import uiadapters.Message;
 import uiadapters.ConversationAdapter;
 
@@ -19,7 +21,7 @@ public class Conversation extends AppCompatActivity {
     private boolean who = false;
     private EditText msgEditText;
     private ImageButton sendButton;
-    private ListView msgListView;
+    private ListView msgListView = null;
     private String user1 = "user1", user2 = "user2";
     private Random random;
     public static ArrayList<Message> list;
@@ -39,7 +41,10 @@ public class Conversation extends AppCompatActivity {
         msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         msgListView.setStackFromBottom(true);
 
-        list = new ArrayList<Message>();
+        if(MessagesInternalStorage.loadMsgFromFile(this) != null)
+            list = new ArrayList<Message>(MessagesInternalStorage.loadMsgFromFile(this));
+        else
+            list = new ArrayList<Message>();
         adapter = new ConversationAdapter(Conversation.this, list);
         msgListView.setAdapter(adapter);
     }
@@ -57,11 +62,13 @@ public class Conversation extends AppCompatActivity {
         who ^= true;
 
         if (!message.equalsIgnoreCase("")) {
-            Message chatMessage = new Message(user1, user2, message, "" + random.nextInt(1000), who);
+            Message chatMessage = new Message(user1, user2, message, UUID.randomUUID().toString(), who);
             Log.v("Conversation", "Who = " + who);
             msgEditText.setText("");
             adapter.add(chatMessage);
             adapter.notifyDataSetChanged();
+            //save msg in internal storage
+            MessagesInternalStorage.saveMsgToFile(this, chatMessage);
         }
     }
 }
