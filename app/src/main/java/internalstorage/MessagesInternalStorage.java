@@ -20,7 +20,7 @@ import uiadapters.Message;
  * Created by raluca.miclea on 12/18/2017.
  */
 
-public class MessagesInternalStorage implements Serializable {
+public class MessagesInternalStorage {
 
     public MessagesInternalStorage(){
         //

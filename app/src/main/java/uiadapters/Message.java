@@ -1,5 +1,6 @@
 package uiadapters;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -9,7 +10,7 @@ import java.util.Random;
  * Created by raluca.miclea on 12/13/2017.
  */
 
-public class Message{
+public class Message implements Serializable {
 
     private String sender;
     private String receiver;
