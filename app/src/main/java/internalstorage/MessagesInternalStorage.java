@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,8 +93,8 @@ public class MessagesInternalStorage {
                     ObjectInputStream is = new ObjectInputStream(fis);
                     String m = (String) is.readObject();
                     Log.i("GSON", "READ MSG : " + m);
-                    Message msg = gson.fromJson(m, Message.class);
-                    msgs.add(msg);
+                    msgs = gson.fromJson(m, new TypeToken<List<Message>>(){}.getType());
+                    //msgs.add(msg);
                     is.close();
                     fis.close();
                 }
