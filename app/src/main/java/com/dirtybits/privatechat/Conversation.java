@@ -2,6 +2,7 @@ package com.dirtybits.privatechat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import uiadapters.ConversationAdapter;
 
 public class Conversation extends AppCompatActivity {
 
+    String contactID;
     private boolean who = false;
     private EditText msgEditText;
     private ImageButton sendButton;
@@ -36,6 +38,7 @@ public class Conversation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
+        contactID = getIntent().getStringExtra("contactID");
         random = new Random();
         msgEditText = (EditText) findViewById(R.id.msgEditText);
         msgListView = (ListView) findViewById(R.id.msgListView);
@@ -45,8 +48,9 @@ public class Conversation extends AppCompatActivity {
         msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         msgListView.setStackFromBottom(true);
 
-        if(MessagesInternalStorage.loadMsgFromFile(this) != null)
-            list = new ArrayList<>(MessagesInternalStorage.loadMsgFromFile(this));
+        //sent the contactID and load the proper msgs
+        if(MessagesInternalStorage.loadMsgFromFile(this, contactID) != null)
+            list = new ArrayList<>(MessagesInternalStorage.loadMsgFromFile(this, contactID));
         else
             list = new ArrayList<>();
         adapter = new ConversationAdapter(Conversation.this, list);
@@ -72,7 +76,7 @@ public class Conversation extends AppCompatActivity {
             adapter.add(chatMessage);
             adapter.notifyDataSetChanged();
             //save msg in internal storage
-            MessagesInternalStorage.saveMsgToFile(this, chatMessage);
+            MessagesInternalStorage.saveMsgToFile(this, chatMessage, contactID);
         }
     }
 }

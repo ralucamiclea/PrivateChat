@@ -2,11 +2,13 @@ package com.dirtybits.privatechat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +29,7 @@ public class ContactsFragment extends Fragment{
     ListView friendList;
     List<String> contactUsernames = null;
     List<Contact> list;
-    String user;
+    String user, contact;
     ContactsAdapter adapter;
     EditText filterText;
     FloatingActionButton fab;
@@ -71,9 +73,13 @@ public class ContactsFragment extends Fragment{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //TODO: open conversation when tapped
-            Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
-            }
+                Contact ctc = (Contact) parent.getItemAtPosition(position);
+                contact = ctc.getName();
+                Log.v("DataClicked", "Data clicked = " + contact);
+                Intent intent = new Intent(getActivity(), Conversation.class);
+                intent.putExtra("contactID", contact);
+                startActivity(intent);
+                }
         });
 
 

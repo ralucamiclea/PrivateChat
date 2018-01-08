@@ -29,12 +29,12 @@ public class MessagesInternalStorage {
     }
 
     /*Save msgs in binary files in INTERNAL STORAGE*/
-    public static void saveMsgToFile(Context context, Message msg) {
+    public static void saveMsgToFile(Context context, Message msg, String contactID) {
 
-        String fileName = "jmsg";
+        String fileName = contactID+"jmsg";
 
         Gson gson = new Gson();
-        List<Message> messages = MessagesInternalStorage.loadMsgFromFile(context);
+        List<Message> messages = MessagesInternalStorage.loadMsgFromFile(context,contactID);
         if (messages != null) {
             messages.add(msg);
 
@@ -52,13 +52,13 @@ public class MessagesInternalStorage {
     }
 
     /*Delete msg from binary files in INTERNAL STORAGE*/
-    public static void deleteMsgFromFile(Context context, Message msg) {
+    public static void deleteMsgFromFile(Context context, Message msg, String contactID) {
         Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if (file.getName().equals("jmsg")) {
+                if (file.getName().equals(contactID+"jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     byte buffer[] = new byte[fis.available()];
                     fis.read(buffer);
@@ -80,14 +80,24 @@ public class MessagesInternalStorage {
         }
     }
 
+    /*Delete msg from binary files in INTERNAL STORAGE*/
+    public static void deleteMsgFile(Context context, String contactID) {
+        for (File file : context.getFilesDir().listFiles()) {
+            if (file.getName().equals(contactID+"jmsg")) {
+                boolean deleted = file.delete();
+            }
+        }
+    }
+
+
     /*Load msgs from binary files in INTERNAL STORAGE*/
-    public static List<Message> loadMsgFromFile(Context context) {
+    public static List<Message> loadMsgFromFile(Context context, String contactID) {
         Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if (file.getName().equals("jmsg")) {
+                if (file.getName().equals(contactID+"jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     byte buffer[] = new byte[fis.available()];
                     fis.read(buffer);

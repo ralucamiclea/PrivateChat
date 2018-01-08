@@ -69,6 +69,7 @@ public class ChatAdapter extends ArrayAdapter<Chat> implements Filterable {
         itemHolder.chat_image.setImageResource(hItem.getImage());
 
         return view;
+
     }
 
     private static class ItemHolder {

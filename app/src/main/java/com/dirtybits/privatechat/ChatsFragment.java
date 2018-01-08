@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import internalstorage.ContactsInternalStorage;
+import internalstorage.MessagesInternalStorage;
 import uiadapters.Chat;
 import uiadapters.ChatAdapter;
 
@@ -30,6 +32,8 @@ public class ChatsFragment extends Fragment{
     List<Chat> list;
     ChatAdapter adapter;
     EditText filterText;
+    List<String> contactUsernames = null;
+    String contact;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -50,10 +54,19 @@ public class ChatsFragment extends Fragment{
 
 
         /*Get conversation details from storage*/
-        //TODO: get usernames from storage
-        Chat[] values = {new Chat("friend1", R.drawable.ic_chat), new Chat("friend2", R.drawable.ic_chat), new Chat("friend3", R.drawable.ic_chat), new Chat("friend4", R.drawable.ic_chat), new Chat("friend5", R.drawable.ic_chat), new Chat("friend6", R.drawable.ic_chat),new Chat("friend7", R.drawable.ic_chat)};
         list = new ArrayList<Chat>();
-        Collections.addAll(list,values);
+        if(ContactsInternalStorage.loadContactsFromFile(getContext()) != null)
+            contactUsernames= new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext()));
+        if(contactUsernames != null) {
+            for (String contact:contactUsernames) {
+                //looks for contacts with whom the user had a conversation
+                if(MessagesInternalStorage.loadMsgFromFile(getContext(), contact).isEmpty() == false) {
+                    Log.v("ImportedContacts", MessagesInternalStorage.loadMsgFromFile(getContext(), contact).toString());
+                    list.add(new Chat(contact, R.drawable.ic_user));
+                }
+            }
+        }
+
 
         /*Set the custom adapter for the conversations list.*/
         adapter = new ChatAdapter(getActivity(), R.layout.item_chat, list);
@@ -65,8 +78,12 @@ public class ChatsFragment extends Fragment{
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //TODO: open conversation when tapped
-            Toast.makeText(view.getContext(), "This Conversation should open.", Toast.LENGTH_LONG).show();
+                Chat ctc = (Chat) parent.getItemAtPosition(position);
+                contact = ctc.getName();
+                Log.v("DataClicked", "Data clicked = " + contact);
+                Intent intent = new Intent(getActivity(), Conversation.class);
+                intent.putExtra("contactID", contact);
+                startActivity(intent);
             }
         });
 
@@ -76,18 +93,22 @@ public class ChatsFragment extends Fragment{
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                Chat ctc = (Chat) parent.getItemAtPosition(position);
+                contact = ctc.getName();
+                Log.v("DataClicked", "Data clicked = " + contact);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setMessage("Do you want to delete conversation?");
                 alertDialogBuilder.setPositiveButton("yes",
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                        //TODO: delete conversation from storage
-                        Chat toRemove = adapter.getItem(position);
-                        list.remove(toRemove);
-                        adapter.remove(toRemove); //TODO: fix this doube list issue
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
+                            //delete conversation from storage
+                            MessagesInternalStorage.deleteMsgFile(getContext(), contact);
+                            //delete from ListView
+                            Chat toRemove = adapter.getItem(position);
+                            adapter.remove(toRemove);
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
                     }});
 
             alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
