@@ -38,13 +38,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        //start login activity
-        if(loggedUser == null) {
+        //start login activity if no user is logged
+        if(getIntent().getStringExtra("user") == null || getIntent().getStringExtra("pass") == null ) {
             Log.v("MainActivity", "No user is logged so start Login activity.");
             startActivityForResult(new Intent(getApplicationContext(), Login.class), REQ_SIGNIN);
         }
-        */
 
         fab = (FloatingActionButton) findViewById(R.id.fab_main);
 
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-        /*Manage fab on all tabs*/
+    /*Manage fab on all tabs*/
         frag1.shareFab(fab); // init the FAB
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

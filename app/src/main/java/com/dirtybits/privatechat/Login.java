@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity {
                     password.setError("Please enter a password.");
                 }
                 else{
-                    //TODO: check if the user exists
+                    //TODO: check if the user exists in DB and the pass is correct
                     Log.v("Login", "Log in the user and start Main.");
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     intent.putExtra("user", user);
