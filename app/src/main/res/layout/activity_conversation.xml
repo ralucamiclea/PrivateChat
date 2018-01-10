@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/navigationBarColor"
+    android:background="@color/windowBackground"
     android:orientation="vertical" >
 
     <ListView
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/form"
-        android:divider="@color/colorPrimaryDark"
+        android:divider="@color/windowBackground"
         android:dividerHeight="4dp"
         android:paddingBottom="10dp"
         android:text=""
@@ -24,9 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/colorPrimaryDark"
         android:orientation="horizontal"
-        android:paddingBottom="2dp" >
+        android:paddingBottom="2dp"
+        android:background="@drawable/shapelayout">
 
 
         <EditText
@@ -40,7 +40,8 @@
             android:layout_weight="0.72"
             android:ems="10"
             android:maxHeight="80dp"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent"
+            />
 
         <ImageButton
             android:id="@+id/sendMessageButton"
@@ -48,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_send_button"
+            android:background="@drawable/sendlight"
             android:onClick="onClick"
             android:text="d" />
 
