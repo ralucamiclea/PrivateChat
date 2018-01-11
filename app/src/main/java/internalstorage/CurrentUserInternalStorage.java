@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,11 +31,12 @@ public class CurrentUserInternalStorage {
     public static void saveUserToFile(Context context, User user) {
         String fileName = "loggeduser";
 
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        Log.i("GSON", "Logged user converted to JSON : " + json);
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(user);
-            os.close();
+            fos.write(json.getBytes());
             fos.close();
         } catch (IOException e) {
             Toast.makeText(context, "Cannot access local data to store logged user.", Toast.LENGTH_SHORT).show();
@@ -41,48 +44,29 @@ public class CurrentUserInternalStorage {
         }
     }
 
-    /*Delete logged user from binary files in INTERNAL STORAGE*/
-    public static void deleteUserFromFile(Context context, User user) {
-        try {
-            boolean flag = false;
-            String username = user.getUsername();
-            for (File file : context.getFilesDir().listFiles()) {
-                if(file.getName().startsWith("loggeduser")) {
-                    FileInputStream fis = context.openFileInput(file.getName());
-                    ObjectInputStream is = new ObjectInputStream(fis);
-                    String contact = (String) is.readObject();
-                    is.close();
-                    fis.close();
-                    if (username.equals(contact)) {
-                        Log.v("DeleteStorage", "Try to delete logged user.");
-                        flag = file.delete();
-                        break;
-                    }
-                }
+    /*Delete msg from binary files in INTERNAL STORAGE*/
+    public static void deleteUserFile(Context context) {
+        for (File file : context.getFilesDir().listFiles()) {
+            if (file.getName().startsWith("loggeduser")) {
+                boolean deleted = file.delete();
             }
-            if(flag == false) {
-                Log.v("DeleteStorage", "Cannot delete logged user.");
-                Toast.makeText(context, "Cannot delete logged user.", Toast.LENGTH_SHORT).show();
-            }
-            Log.v("DeleteStorage", "Deleted logged user.");
-        } catch (IOException e) {
-            Toast.makeText(context, "Cannot access local data to delete logged user.", Toast.LENGTH_SHORT).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
     /*Load contacts from binary files in INTERNAL STORAGE*/
     public static User loadUserFromFile(Context context) {
+        Gson gson = new Gson();
         try {
             User user = null;
 
             for (File file : context.getFilesDir().listFiles()) {
                 if(file.getName().startsWith("loggeduser")) {
                     FileInputStream fis = context.openFileInput(file.getName());
-                    ObjectInputStream is = new ObjectInputStream(fis);
-                    user = (User) is.readObject();
-                    is.close();
+                    byte buffer[] = new byte[fis.available()];
+                    fis.read(buffer);
+                    String m = new String(buffer);
+                    Log.i("GSON", "READ Logged user : " + m);
+                    user = gson.fromJson(m, User.class);
                     fis.close();
                 }
             }
@@ -90,8 +74,6 @@ public class CurrentUserInternalStorage {
             return user;
         } catch (IOException e) {
             Toast.makeText(context, "Cannot access local data to load logged user.", Toast.LENGTH_SHORT).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return null;
     }
