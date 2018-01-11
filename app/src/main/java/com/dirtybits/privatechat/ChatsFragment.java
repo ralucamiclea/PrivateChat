@@ -20,13 +20,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import auth.User;
 import internalstorage.ContactsInternalStorage;
+import internalstorage.CurrentUserInternalStorage;
 import internalstorage.MessagesInternalStorage;
 import uiadapters.Chat;
 import uiadapters.ChatAdapter;
 
 public class ChatsFragment extends Fragment{
 
+    User loggeduser;
     FloatingActionButton fab;
     ListView chatList;
     List<Chat> list;
@@ -52,16 +55,19 @@ public class ChatsFragment extends Fragment{
         filterText = (EditText) view.findViewById(R.id.search_old_conv);
         chatList = (ListView) view.findViewById(R.id.chatList);
 
+        loggeduser = CurrentUserInternalStorage.loadUserFromFile(getContext());
+        if (loggeduser != null) {
+            Log.v("LoggedUserChats", loggeduser.getUsername());
 
         /*Get conversation details from storage*/
         list = new ArrayList<Chat>();
-        if(ContactsInternalStorage.loadContactsFromFile(getContext()) != null)
-            contactUsernames= new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext()));
-        if(contactUsernames != null) {
-            for (String contact:contactUsernames) {
+        if (ContactsInternalStorage.loadContactsFromFile(getContext(), loggeduser) != null)
+            contactUsernames = new ArrayList<>(ContactsInternalStorage.loadContactsFromFile(getContext(), loggeduser));
+        if (contactUsernames != null) {
+            for (String contact : contactUsernames) {
                 //looks for contacts with whom the user had a conversation
-                if(MessagesInternalStorage.loadMsgFromFile(getContext(), contact).isEmpty() == false) {
-                    Log.v("ImportedContacts", MessagesInternalStorage.loadMsgFromFile(getContext(), contact).toString());
+                if (MessagesInternalStorage.loadMsgFromFile(getContext(), contact, loggeduser).isEmpty() == false) {
+                    Log.v("ImportedContacts", MessagesInternalStorage.loadMsgFromFile(getContext(), contact, loggeduser).toString());
                     list.add(new Chat(contact, R.drawable.ic_user));
                 }
             }
@@ -96,31 +102,32 @@ public class ChatsFragment extends Fragment{
                 Chat ctc = (Chat) parent.getItemAtPosition(position);
                 contact = ctc.getName();
                 Log.v("DataClicked", "Data clicked = " + contact);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-            alertDialogBuilder.setMessage("Do you want to delete conversation?");
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setMessage("Do you want to delete conversation?");
                 alertDialogBuilder.setPositiveButton("yes",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            //delete conversation from storage
-                            MessagesInternalStorage.deleteMsgFile(getContext(), contact);
-                            //delete from ListView
-                            Chat toRemove = adapter.getItem(position);
-                            adapter.remove(toRemove);
-                            adapter.notifyDataSetChanged();
-                            Toast.makeText(getContext(),"Conversation deleted",Toast.LENGTH_LONG).show();
-                    }});
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //delete conversation from storage
+                                MessagesInternalStorage.deleteMsgFile(getContext(), contact, loggeduser);
+                                //delete from ListView
+                                Chat toRemove = adapter.getItem(position);
+                                adapter.remove(toRemove);
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(getContext(), "Conversation deleted", Toast.LENGTH_LONG).show();
+                            }
+                        });
 
-            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                }
-            });
+                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-            return true;
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return true;
             }
         });
 
@@ -141,8 +148,10 @@ public class ChatsFragment extends Fragment{
             public void afterTextChanged(Editable s) {
             }
         });
+    }
 
-        return view;
+            return view;
+
     }
 
     /*Control the shared fab. Start a new conversation.*/

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import auth.User;
+import internalstorage.CurrentUserInternalStorage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -151,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 String pass = data.getStringExtra("pass");
                 Log.v("MainActivity", "A user logged in: " + user + " " + pass);
                 loggedUser = new User(user, pass);
+                //add the user to internal storage
+                CurrentUserInternalStorage.saveUserToFile(this,loggedUser);
             } else if (resultCode == RESULT_CANCELED) {
                 //user data was not retrieved
                 Log.v("MainActivity", "NO user logged in.");

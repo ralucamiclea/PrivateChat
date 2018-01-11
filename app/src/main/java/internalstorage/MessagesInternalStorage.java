@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import auth.User;
 import uiadapters.Message;
 
 /**
@@ -29,12 +30,12 @@ public class MessagesInternalStorage {
     }
 
     /*Save msgs in binary files in INTERNAL STORAGE*/
-    public static void saveMsgToFile(Context context, Message msg, String contactID) {
+    public static void saveMsgToFile(Context context, Message msg, String contactID, User user) {
 
-        String fileName = contactID+"jmsg";
+        String fileName = user.getUsername() + contactID+"jmsg";
 
         Gson gson = new Gson();
-        List<Message> messages = MessagesInternalStorage.loadMsgFromFile(context,contactID);
+        List<Message> messages = MessagesInternalStorage.loadMsgFromFile(context,contactID,user);
         if (messages != null) {
             messages.add(msg);
 
@@ -52,13 +53,13 @@ public class MessagesInternalStorage {
     }
 
     /*Delete msg from binary files in INTERNAL STORAGE*/
-    public static void deleteMsgFromFile(Context context, Message msg, String contactID) {
+    public static void deleteMsgFromFile(Context context, Message msg, String contactID, User user) {
         Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if (file.getName().equals(contactID+"jmsg")) {
+                if (file.getName().equals(user.getUsername() + contactID+"jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     byte buffer[] = new byte[fis.available()];
                     fis.read(buffer);
@@ -81,9 +82,9 @@ public class MessagesInternalStorage {
     }
 
     /*Delete msg from binary files in INTERNAL STORAGE*/
-    public static void deleteMsgFile(Context context, String contactID) {
+    public static void deleteMsgFile(Context context, String contactID, User user) {
         for (File file : context.getFilesDir().listFiles()) {
-            if (file.getName().equals(contactID+"jmsg")) {
+            if (file.getName().equals(user.getUsername() + contactID+"jmsg")) {
                 boolean deleted = file.delete();
             }
         }
@@ -91,13 +92,13 @@ public class MessagesInternalStorage {
 
 
     /*Load msgs from binary files in INTERNAL STORAGE*/
-    public static List<Message> loadMsgFromFile(Context context, String contactID) {
+    public static List<Message> loadMsgFromFile(Context context, String contactID, User user) {
         Gson gson = new Gson();
         try {
             List<Message> msgs = new ArrayList<>();
 
             for (File file : context.getFilesDir().listFiles()) {
-                if (file.getName().equals(contactID+"jmsg")) {
+                if (file.getName().equals(user.getUsername() + contactID+"jmsg")) {
                     FileInputStream fis = context.openFileInput(file.getName());
                     byte buffer[] = new byte[fis.available()];
                     fis.read(buffer);

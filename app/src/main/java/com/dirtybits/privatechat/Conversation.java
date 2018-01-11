@@ -17,12 +17,15 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
+import auth.User;
+import internalstorage.CurrentUserInternalStorage;
 import internalstorage.MessagesInternalStorage;
 import uiadapters.Message;
 import uiadapters.ConversationAdapter;
 
 public class Conversation extends AppCompatActivity {
 
+    User loggeduser;
     String contactID;
     private boolean who = false;
     private EditText msgEditText;
@@ -48,13 +51,18 @@ public class Conversation extends AppCompatActivity {
         msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         msgListView.setStackFromBottom(true);
 
-        //sent the contactID and load the proper msgs
-        if(MessagesInternalStorage.loadMsgFromFile(this, contactID) != null)
-            list = new ArrayList<>(MessagesInternalStorage.loadMsgFromFile(this, contactID));
-        else
-            list = new ArrayList<>();
-        adapter = new ConversationAdapter(Conversation.this, list);
-        msgListView.setAdapter(adapter);
+        loggeduser = CurrentUserInternalStorage.loadUserFromFile(this);
+        if(loggeduser!=null) {
+            Log.v("LoggedUserConversation", loggeduser.getUsername());
+
+            //sent the contactID and load the proper msgs
+            if (MessagesInternalStorage.loadMsgFromFile(this, contactID, loggeduser) != null)
+                list = new ArrayList<>(MessagesInternalStorage.loadMsgFromFile(this, contactID, loggeduser));
+            else
+                list = new ArrayList<>();
+            adapter = new ConversationAdapter(Conversation.this, list);
+            msgListView.setAdapter(adapter);
+        }
     }
 
     public void onClick(View v) {
@@ -76,7 +84,7 @@ public class Conversation extends AppCompatActivity {
             adapter.add(chatMessage);
             adapter.notifyDataSetChanged();
             //save msg in internal storage
-            MessagesInternalStorage.saveMsgToFile(this, chatMessage, contactID);
+            MessagesInternalStorage.saveMsgToFile(this, chatMessage, contactID, loggeduser);
         }
     }
 }
